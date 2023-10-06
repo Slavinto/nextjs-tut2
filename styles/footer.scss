@@ -1,0 +1,91 @@
+@use "partials" as p;
+
+.footer {
+    font-weight: 400;
+    display: flex;
+    gap: 5rem;
+    margin-top: 8rem;
+    background-color: p.$formOverlay2;
+    width: 100%;
+    padding: 4rem 10rem 0rem 10rem;
+
+    // .footer__company-info
+
+    &__company-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+
+        max-width: 25rem;
+    }
+
+    // .footer__company-name
+
+    &__company-name {
+        font-weight: 600;
+    }
+
+    // .footer__company-address
+
+    &__company-address {
+    }
+
+    // .footer__company-phone
+
+    &__company-phone {
+    }
+
+    // .footer__links
+
+    &__links {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+
+        :link,
+        :visited {
+            font-weight: 600;
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+        :hover,
+        :active {
+        }
+    }
+
+    // .footer__services-link
+
+    &__services-link {
+    }
+
+    // .footer__work-link
+
+    &__work-link {
+    }
+
+    // .footer__blog-link
+
+    &__blog-link {
+    }
+
+    // .footer__about-link
+
+    &__about-link {
+    }
+
+    // .footer__contact-link
+
+    &__contact-link {
+    }
+
+    // .footer__copy
+
+    &__copy {
+        font-family: "Raleway", sans-serif;
+        font-size: 1.4rem;
+        font-weight: 300;
+        line-height: 1.96rem;
+
+        padding-bottom: 4rem;
+    }
+}

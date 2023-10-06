@@ -1,0 +1,121 @@
+@use "colors" as c;
+@use "mixins" as m;
+@use "placeholders-text" as pt;
+@use "variables" as v;
+
+@mixin btn {
+    display: flex;
+    padding: 2rem 9rem;
+    background-color: c.$active;
+
+    @include m.mq(tablet-wide, max) {
+        align-self: center;
+    }
+}
+
+@mixin full-width-flex {
+    align-self: stretch;
+    display: flex;
+    flex: 1 1 100%;
+}
+
+@mixin icon-image {
+    object-position: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    object-fit: none;
+}
+
+@mixin overlay($color: c.$darkOverlay2) {
+    position: absolute;
+    box-sizing: inherit;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    background-color: $color;
+    color: c.$white;
+    pointer-events: none;
+}
+
+/*===========================================*/
+// Custom pattern styling classes
+/*===========================================*/
+
+@mixin section-mobile {
+    @include m.mq(tablet-wide, max) {
+        padding-left: v.$padding-general + rem !important;
+        padding-right: v.$padding-general + rem !important;
+        padding-top: 0 + rem !important;
+        padding-bottom: 0 + rem !important;
+    }
+}
+
+@mixin header-with-line {
+    position: relative;
+    width: 2.5rem;
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    justify-content: center;
+
+    .__line {
+        position: absolute;
+        background-color: c.$white;
+        height: 0.2rem;
+    }
+
+    .__header {
+        @include pt.section-header;
+    }
+}
+
+/*===========================================*/
+// Default styling classes
+/*===========================================*/
+@mixin centered {
+    margin: 0 auto;
+}
+
+@mixin mobile-link {
+    display: none;
+    @include m.mq(tablet, max) {
+        display: inline-block;
+    }
+}
+
+@mixin wrapper {
+    width: v.$wrapper-width + rem;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // background is defined in _modifier-classes
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        z-index: -1;
+        width: v.$wrapper-width;
+        height: 68.3rem;
+        @include m.background(v.$headerBg);
+    }
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        z-index: -1;
+        width: v.$wrapper-width;
+        height: 47.1rem;
+        background-color: #2d3e74;
+        @include m.background(v.$footerBg);
+        background-size: 64.8rem;
+        background-position: bottom right 8rem;
+    }
+}

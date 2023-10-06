@@ -1,0 +1,27 @@
+@use "maps";
+@use "colors" as c;
+
+/*===========================================*/
+// Variables
+/*===========================================*/
+$bps: maps.$breakpoints;
+$main-content-container: 1140;
+$main-content-container-rem: calc($main-content-container/10);
+$wrapper-width: 144;
+
+$padding-general: 4;
+
+// for a full-width container inside a fixed width container
+$margin-negative: -(calc(($wrapper-width - $main-content-container-rem) / 2) +
+            rem);
+
+/*===========================*/
+
+/*===========================*/
+
+$headerBg: c.$transparent;
+$footerBg: c.$transparent;
+// $headerBg: c.$primary;
+// $footerBg: c.$secondary;
+// $headerBg: "../img/header-bg.jpg";
+// $footerBg: "../img/footer-bg.jpg";

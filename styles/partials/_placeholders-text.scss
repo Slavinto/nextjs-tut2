@@ -1,0 +1,131 @@
+@use "colors" as c;
+@use "fonts" as f;
+@use "mixins" as m;
+@use "variables" as v;
+
+//===common-text-templates===
+
+@mixin normal-text {
+    font-style: normal;
+    line-height: normal;
+    color: c.$white;
+}
+
+@mixin text-light {
+    @include normal-text;
+    font-size: 1.8rem;
+    font-weight: 300;
+    line-height: 2.52rem;
+}
+
+// ==========================
+@mixin test {
+    @include normal-text();
+    font-family: Source Sans Pro;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 3.08rem;
+}
+// ==========================
+
+@mixin article-header {
+    @include normal-text();
+    font-size: 1.8rem;
+    font-weight: 400;
+    line-height: 2.16rem;
+    text-transform: uppercase;
+}
+
+@mixin footer {
+    @include normal-text();
+    font-size: 1.6rem;
+    line-height: 2.24rem;
+}
+
+@mixin form-header {
+    color: c.$dark;
+    font-size: 4.8rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 6.24rem;
+    text-transform: uppercase;
+}
+
+@mixin cta {
+    @include normal-text;
+    color: c.$dark2;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08px;
+    text-transform: uppercase;
+}
+
+@mixin form-text-dark {
+    @include normal-text();
+    color: c.$dark;
+    font-family: f.$source;
+    font-size: 1.8rem;
+    font-weight: 300;
+}
+
+@mixin form-text-light {
+    @include form-text-dark();
+    color: c.$white;
+}
+
+@mixin hero-header {
+    @include normal-text;
+    font-size: 5.2rem;
+    font-weight: 200;
+    line-height: 6.76rem;
+    text-transform: uppercase;
+}
+
+@mixin hero-text {
+    @include normal-text;
+    font-family: f.$source;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 3.08rem;
+}
+
+@mixin section-header {
+    @include normal-text;
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 3.5rem;
+    text-transform: uppercase;
+    padding: 0 0.5rem;
+
+    @include m.mq(tablet-wide, max) {
+        align-self: center;
+    }
+}
+
+@mixin text-light-cap {
+    @include text-light;
+    text-transform: uppercase;
+}
+
+@mixin text {
+    @include normal-text;
+    font-size: 2.2rem;
+    font-weight: 300;
+    line-height: 3.08rem;
+}
+
+@mixin logo-text {
+    @include normal-text;
+    font-family: "Varela";
+    font-size: 2.2rem;
+    font-weight: 400;
+}
+
+@mixin top-menu-text {
+    @include normal-text;
+    font-size: 1.4rem;
+    font-weight: 300;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}

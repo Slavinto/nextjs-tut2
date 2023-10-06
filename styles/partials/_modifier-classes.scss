@@ -1,0 +1,76 @@
+@use "colors" as c;
+@use "maps";
+@use "mixins" as m;
+@use "placeholders";
+@use "placeholders-text";
+@use "variables" as v;
+
+/*===========================================*/
+// Main adaptive container
+._container {
+    /*===========================================*/
+    // Container current
+    /*===========================================*/
+    $w: v.$main-content-container + px;
+
+    // @media (width > map_get($bps, "desktop-wide")){
+    //     // 1440px
+    //     max-width: map_get($bps, "desktop-wide");
+    // }
+
+    // @include m.mq(desktop-wide, max) {
+    //     //1248px
+    //     max-width: map_get($bps, "desktop");
+    // }
+
+    /*===this=media=query=must=always=be=ontop===*/
+    @media (width > $w) {
+        // 1144px
+        max-width: $w;
+    }
+    /*===========================================*/
+
+    @include m.mq(desktop, max) {
+        //1024px
+        max-width: map_get(v.$bps, "tablet-wide");
+    }
+
+    @include m.mq(tablet-wide, max) {
+        //768px
+        max-width: map_get(v.$bps, "tablet");
+    }
+
+    @include m.mq(tablet, max) {
+        //640px
+        max-width: map_get(v.$bps, "tablet-small");
+    }
+
+    @include m.mq(tablet-small, max) {
+        //560px
+        max-width: map_get(v.$bps, "phablet");
+    }
+
+    @include m.mq(phablet, max) {
+        //480px
+        max-width: map_get(v.$bps, "phone-wide");
+    }
+    @include m.mq(phone-wide, max) {
+        //400px
+        max-width: map_get(v.$bps, "phone");
+    }
+    @media (width <= 380px) {
+        // padding: 0;
+        // margin: 0;
+    }
+}
+
+/*===========================================*/
+// Wrapper class
+._wrapper {
+    @include placeholders.wrapper;
+    @include m.background("/static/background.png");
+
+    // @include m.background(c.$dark);
+    @include m.background(rgba(255, 255, 255, 0));
+}
+/*===========================================*/

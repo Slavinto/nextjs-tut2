@@ -1,0 +1,67 @@
+/*===========================================*/
+//  Imports
+/*===========================================*/
+@use "partials" as p;
+
+/*===========================================*/
+// Initialize
+/*===========================================*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.7rem rgba(134, 149, 164, 0.5);
+}
+
+html {
+    /* decreases default root element font size 
+    to 10px from 16px */
+    // font-size: 62.5%;
+
+    font-size: calc(10 / 16) * 100% !important;
+
+    @include p.mq(desktop, max) {
+        font-size: calc(10 / 16) * 100% !important;
+    }
+    @include p.mq(tablet-wide, max) {
+        font-size: calc(8.5 / 16) * 100% !important;
+    }
+    @include p.mq(tablet, max) {
+        font-size: calc(7.5 / 16) * 100% !important;
+    }
+    @include p.mq(phone-wide, max) {
+        font-size: calc(6.5 / 16) * 100% !important;
+    }
+    @include p.mq(phone, max) {
+        font-size: calc(6 / 16) * 100% !important;
+    }
+}
+
+body {
+    ul {
+        list-style-type: none;
+    }
+    a {
+        text-decoration: none;
+    }
+
+    line-height: 1;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: p.$white;
+}
+
+body,
+input,
+textarea,
+button {
+    font-family: p.$fontByDefault;
+}
+
+section {
+    @include p.section-mobile;
+}
