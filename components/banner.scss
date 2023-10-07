@@ -3,17 +3,34 @@
 
 .banner {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    justify-content: space-around;
+    align-items: center;
+
+    @include p.mq(tablet-small, max) {
+        flex-direction: column;
+        gap: 4rem;
+    }
+
+    &__description {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        @include p.mq(tablet-small, max) {
+            align-items: center;
+        }
+    }
 
     &__title {
         letter-spacing: -0.025em;
         font-weight: 900;
         color: p.$dark;
 
-        font-size: 4.8rem /* 48px */;
+        font-size: 8rem /* 48px */;
         line-height: 1;
+        font-family: "DancingScriptBold";
     }
+
     &__text {
         font-size: 2.4rem /* 24px */;
         line-height: 3.2rem /* 32px */;
@@ -22,6 +39,8 @@
     }
     &__text-light {
         color: p.$white;
+        font-size: 5.5rem;
+        font-weight: 200;
     }
     &__text-dark {
         color: p.$linkHover;
@@ -40,6 +59,8 @@
         font-size: 1.8rem;
         line-height: 2.8rem;
 
+        border-radius: 2px;
+
         &:link,
         &:visited {
         }
@@ -49,6 +70,10 @@
         }
         &:hover,
         &:active {
+        }
+
+        @include p.mq(tablet-small, max) {
+            align-self: center;
         }
     }
 }

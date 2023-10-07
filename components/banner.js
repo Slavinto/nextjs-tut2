@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 // import "./banner.module.scss";
 
 import React from "react";
@@ -6,18 +7,31 @@ import React from "react";
 const Banner = ({ ctaText, handleClickCta }) => {
     return (
         <section className='banner'>
-            <h1 className='banner__title'>
-                <span className='banner__text-light'>Coffee</span>{" "}
-                <span className='banner__text-dark'>Connoisseur</span>
-            </h1>
-            <p className='banner__text'>Discover your local coffee shops!</p>
-            <Link
-                onClick={() => handleClickCta()}
-                className='banner__cta'
-                href='#'
-            >
-                {ctaText}
-            </Link>
+            <article className='banner__description'>
+                <h1 className='banner__title'>
+                    <span className='banner__text-light'>Coffee</span>{" "}
+                    <span className='banner__text-dark'>Connoisseur</span>
+                </h1>
+                <p className='banner__text'>
+                    Discover your local coffee shops!
+                </p>
+                <Link
+                    onClick={() => handleClickCta()}
+                    className='banner__cta'
+                    href='#'
+                >
+                    {ctaText}
+                </Link>
+            </article>
+            <figure className='banner__hero-image-container'>
+                <Image
+                    className='banner__hero-image'
+                    src='/../public/static/heroimg.png'
+                    width={407}
+                    height={240}
+                    alt='women drinking coffee illustration'
+                />
+            </figure>
         </section>
     );
 };
