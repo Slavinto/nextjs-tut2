@@ -19,8 +19,8 @@ $margin-negative: -(calc(($wrapper-width - $main-content-container-rem) / 2) +
 
 /*===========================*/
 
-$headerBg: c.$transparent;
-$footerBg: c.$transparent;
+$headerBg: transparent;
+$footerBg: transparent;
 // $headerBg: c.$primary;
 // $footerBg: c.$secondary;
 // $headerBg: "../img/header-bg.jpg";

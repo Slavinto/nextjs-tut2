@@ -10,16 +10,19 @@ $active: #c3dd4f;
 $darkOverlay: rgba(38, 35, 44, 0.95);
 $darkOverlay2: rgba(51, 47, 61, 0.6);
 $formOverlay: rgba(38, 35, 44, 0.1);
-$formOverlay2: rgba(255, 255, 255, 0.1);
+$formOverlay1: rgba(255, 255, 255, 0.1);
+$formOverlay2: rgba(255, 255, 255, 0.2);
+$formOverlay3: rgba(255, 255, 255, 0.3);
+$formOverlay4: rgba(255, 255, 255, 0.4);
+$formOverlay5: rgba(255, 255, 255, 0.5);
 $light: #c6e1f9;
 $lightOverlay: rgba(198, 225, 249, 0.98);
 
-$textPurpleActive: rgb(99, 106, 184);
-$textPurple: #373b64;
-
-$transparent: #ffffff00;
 /*===========================================*/
 // Text
 /*===========================================*/
 $white: #fff;
 $linkHover: #4541ff;
+
+$textPurpleActive: rgb(99, 106, 184);
+$textPurple: #373b64;

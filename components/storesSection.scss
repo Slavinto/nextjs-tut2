@@ -1,0 +1,18 @@
+@use "../styles/partials" as p;
+
+.stores-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+    margin: 8rem 0rem;
+    &__title {
+        @include p.section-header;
+        font-family: p.$dancing;
+    }
+    &__cards {
+        display: grid;
+        grid-template-columns: repeat(3, 30rem);
+        gap: 4rem;
+    }
+}

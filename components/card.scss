@@ -1,0 +1,63 @@
+@use "../styles/partials" as p;
+
+.stores {
+    &__card {
+        width: 100%;
+        height: 22.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        background-color: p.$formOverlay4;
+        border-radius: 1rem;
+        padding: 2rem;
+    }
+    &__card-link {
+        position: relative;
+        overflow: hidden;
+        .stores__card-overlay {
+            opacity: 0;
+        }
+        &:hover,
+        &:active {
+            .stores__card-overlay {
+                opacity: 1;
+                transition: all 0.2s ease-in;
+            }
+        }
+    }
+    &__card-overlay {
+        @include p.overlay();
+        border-radius: 1rem;
+        opacity: 0;
+        background-color: p.$formOverlay3;
+    }
+    &__card-title {
+        @include p.truncate(26rem);
+        @include p.form-text-dark;
+
+        font-weight: 700;
+        position: relative;
+        z-index: 5;
+
+        &:link,
+        &:visited {
+            // color: p.$textPurple;
+        }
+        &:hover,
+        &:active {
+            // transition: color 0.2s ease-out;
+            // color: p.$textPurpleActive;
+        }
+    }
+    &__image {
+        @include p.adaptive;
+        border-radius: 1rem;
+    }
+    &__image-container {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        width: 100%;
+        height: 14rem;
+    }
+}

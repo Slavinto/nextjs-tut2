@@ -1,7 +1,9 @@
-@use "defaults";
+@use "../components/card";
 @use "../components/banner";
-@use "navigation";
+@use "../components/storesSection";
 @use "footer";
+@use "navigation";
+@use "defaults";
 
 .content {
     width: 100%;
