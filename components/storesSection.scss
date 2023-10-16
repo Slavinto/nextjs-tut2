@@ -9,10 +9,27 @@
     &__title {
         @include p.section-header;
         font-family: p.$dancing;
+
+        @include p.mq(phablet, max) {
+            font-size: 5rem;
+        }
     }
     &__cards {
+        width: 100%;
         display: grid;
-        grid-template-columns: repeat(3, 30rem);
-        gap: 4rem;
+        grid-template-columns: repeat(3, 33fr);
+        column-gap: 4rem;
+        row-gap: 2.5rem;
+
+        @include p.mq(tablet, max) {
+            grid-template-columns: repeat(2, 30rem);
+            column-gap: 8rem;
+            row-gap: 3.5rem;
+        }
+
+        @include p.mq(phablet, max) {
+            width: 100%;
+            grid-template-columns: repeat(1, 100%);
+        }
     }
 }

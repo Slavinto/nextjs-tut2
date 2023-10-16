@@ -1,0 +1,104 @@
+@use "../styles/partials" as p;
+
+.store {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+    max-width: 100%;
+    @include p.text-light;
+
+    @include p.mq(tablet-small, max) {
+        align-items: center;
+    }
+
+    &__home-link {
+        &:link,
+        &:visited {
+            color: p.$textPurple;
+        }
+        &:hover,
+        &:active {
+            transition: all 0.2s ease-in-out;
+            color: p.$textPurpleActive;
+        }
+    }
+    &__title {
+        @include p.text-light;
+    }
+    &__description {
+        display: flex;
+        gap: 2rem;
+        max-width: 100%;
+
+        @include p.mq(tablet-small, max) {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+    &__image-container {
+        max-width: 50%;
+        width: 70rem;
+
+        @include p.mq(tablet-small, max) {
+            max-width: 100%;
+        }
+    }
+    &__image {
+        border-radius: 1rem;
+        @include p.adaptive;
+        // object-fit: none;
+        object-fit: cover;
+        height: 35rem;
+    }
+    &__info {
+        width: 35rem;
+        height: 20rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        position: relative;
+        display: flex;
+
+        flex-direction: column;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    &__info-overlay {
+        border-radius: 1rem;
+        @include p.overlay(p.$formOverlay4);
+    }
+    &__info-item-container {
+        display: flex;
+        align-items: center;
+    }
+    &__info-item-icon {
+    }
+    &__address {
+        @include p.logo-text;
+        @include p.truncate(90%);
+        line-height: 2rem;
+    }
+    &__neighbourhood {
+        @include p.logo-text;
+        @include p.truncate(90%);
+        line-height: 2rem;
+    }
+    &__rating {
+        @include p.logo-text;
+        line-height: 1rem;
+    }
+    &__upvote-link {
+        position: relative;
+        z-index: 5;
+
+        &:link,
+        &:visited {
+            background-color: p.$textPurple;
+        }
+        &:hover,
+        &:active {
+            transition: all 0.2s ease-in-out;
+            background-color: p.$textPurpleActive;
+        }
+    }
+}

@@ -46,6 +46,7 @@
     &__links {
         display: flex;
         align-self: center;
+        flex-wrap: wrap;
         // flex-direction: column;
         gap: 4rem;
 

@@ -1,20 +1,139 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import Image from "next/image";
 
-const CoffeeStores = () => {
+import geoIcon from "../../public/static/icons/places.svg";
+import starIcon from "../../public/static/icons/star.svg";
+import nearMe from "../../public/static/icons/nearMe.svg";
+
+import coffeeStoresJson from "../../data/coffee-stores.json";
+
+export const getStaticProps = async (props) => {
+    const { params } = props;
+    const res = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/${params.id}/comments`
+    );
+    const comments = await res.json();
+    const store = {
+        coffeeStore: coffeeStoresJson.find(
+            (store) => store.id.toString() === params.id
+        ),
+        comments,
+    };
+    console.log(store);
+    return {
+        props: { ...store },
+    };
+};
+
+export const getStaticPaths = async () => {
+    const storePaths = coffeeStoresJson.map((store) => {
+        return {
+            params: {
+                id: `${store.id}`,
+            },
+        };
+    });
+    return {
+        // paths: [...storePaths],
+        // paths: [{ params: { id: "0" } }, { params: { id: "1" } }],
+        paths: storePaths,
+        fallback: true,
+    };
+};
+
+const CoffeeStores = ({ coffeeStore, comments }) => {
     const router = useRouter();
+    const { name, imgUrl, websiteUrl, address, neighbourhood } = coffeeStore;
+
+    if (router.isFallback) {
+        return <h1>Loading...</h1>;
+    }
+
+    const handleUpvote = () => {
+        console.log("upvote btn pressed");
+    };
+
     return (
         <>
-            <h1>{router.query.id}</h1>
-            <h3>
-                <Link href={`/coffee-store/${router.query.id}`}>
-                    Current page
+            <Head>
+                <title>{name}</title>
+            </Head>
+            <article className='store'>
+                <Link className='store__home-link' href={"/"}>
+                    {" "}
+                    ← Back to home
                 </Link>
-            </h3>
-            <h3>
-                <Link href={"/"}>Back to home</Link>
-            </h3>
+                <Link className='store__title' href={`${websiteUrl}`}>
+                    <h1>{name}</h1>
+                </Link>
+                <figure className='store__description'>
+                    <div className='store__image-container'>
+                        <Image
+                            className='store__image'
+                            width={500}
+                            height={300}
+                            src={imgUrl}
+                            alt='a coffee shop image'
+                        ></Image>
+                    </div>
+                    <div className='store__info'>
+                        <div className='store__info-overlay'></div>
+                        <div className='store__info-item-container'>
+                            <Image
+                                className='store__info-item-icon'
+                                src={geoIcon}
+                                width={20}
+                                height={20}
+                                alt='geolocation marker icon'
+                            ></Image>
+                            <p className='store__address'>{address}</p>
+                        </div>
+                        <div className='store__info-item-container'>
+                            <Image
+                                className='store__info-item-icon'
+                                src={nearMe}
+                                width={20}
+                                height={20}
+                                alt='airplane icon'
+                            ></Image>
+                            <p className='store__neighbourhood'>
+                                {neighbourhood}
+                            </p>
+                        </div>
+                        <div className='store__info-item-container'>
+                            <Image
+                                className='store__info-item-icon'
+                                src={starIcon}
+                                width={20}
+                                height={20}
+                                alt='star icon'
+                            ></Image>
+                            <p className='store__rating'>{5}</p>
+                        </div>
+                        <Link
+                            className='store__upvote-link banner__cta'
+                            href={"#"}
+                            onClick={handleUpvote}
+                        >
+                            Up vote!
+                        </Link>
+                    </div>
+                </figure>
+                <hr />
+                Comments:
+                <br style={{ alignSelf: "stretch", width: "100%" }} />
+                {comments.map((comment) => {
+                    return (
+                        <>
+                            <p key={comment.id}>{comment.body}</p>
+                            <br />
+                        </>
+                    );
+                })}
+            </article>
         </>
     );
 };

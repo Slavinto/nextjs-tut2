@@ -10,8 +10,14 @@
         background-color: p.$formOverlay4;
         border-radius: 1rem;
         padding: 2rem;
+
+        @include p.mq(phablet, max) {
+            height: 50rem;
+        }
     }
     &__card-link {
+        max-width: 100%;
+        height: 100%;
         position: relative;
         overflow: hidden;
         .stores__card-overlay {
@@ -32,7 +38,7 @@
         background-color: p.$formOverlay3;
     }
     &__card-title {
-        @include p.truncate(26rem);
+        @include p.truncate(90%);
         @include p.form-text-dark;
 
         font-weight: 700;
@@ -48,9 +54,14 @@
             // transition: color 0.2s ease-out;
             // color: p.$textPurpleActive;
         }
+
+        @include p.mq(phablet, max) {
+            font-size: 4rem;
+        }
     }
     &__image {
         @include p.adaptive;
+        // @include p.center-absolute;
         border-radius: 1rem;
     }
     &__image-container {
@@ -59,5 +70,9 @@
         display: flex;
         width: 100%;
         height: 14rem;
+
+        @include p.mq(phablet, max) {
+            height: 37rem;
+        }
     }
 }

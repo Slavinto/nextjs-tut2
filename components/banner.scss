@@ -43,7 +43,7 @@
         font-weight: 200;
     }
     &__text-dark {
-        color: p.$linkHover;
+        color: p.$textPurple;
     }
     &__cta {
         display: flex;
@@ -63,13 +63,12 @@
 
         &:link,
         &:visited {
-        }
-        &:focus {
-            // outline: 1px dotted;
-            // outline: 5px auto -webkit-focus-ring-color;
+            background-color: p.$textPurple;
         }
         &:hover,
         &:active {
+            transition: all 0.2s ease-in-out;
+            background-color: p.$textPurpleActive;
         }
 
         @include p.mq(tablet-small, max) {

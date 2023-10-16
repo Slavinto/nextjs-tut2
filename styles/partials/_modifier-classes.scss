@@ -59,8 +59,8 @@
         max-width: map_get(v.$bps, "phone");
     }
     @media (width <= 380px) {
-        // padding: 0;
-        // margin: 0;
+        padding: 0;
+        margin: 0;
     }
 }
 

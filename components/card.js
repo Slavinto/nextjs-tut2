@@ -3,9 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 
 const Card = ({ coffeeStore }) => {
-    console.log(coffeeStore);
     return (
-        <Link className='stores__card-link' href={coffeeStore.websiteUrl}>
+        <Link className='stores__card-link' href={coffeeStore.href}>
             <figure className='stores__card'>
                 <h3 className='stores__card-title'>{coffeeStore.name}</h3>
                 <div className='stores__image-container'>

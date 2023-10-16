@@ -2,15 +2,14 @@ import React from "react";
 
 import Card from "./card";
 
-const StoresSection = ({ coffeeStore, sectionTitle }) => {
+const StoresSection = ({ coffeeStores, sectionTitle }) => {
     return (
         <section className='stores-section'>
             <h3 className='stores-section__title'>{sectionTitle}</h3>
             <div className='stores-section__cards'>
-                <Card coffeeStore={coffeeStore} />
-                <Card coffeeStore={coffeeStore} />
-                <Card coffeeStore={coffeeStore} />
-                <Card coffeeStore={coffeeStore} />
+                {coffeeStores.map((store) => {
+                    return <Card key={store.id} coffeeStore={store} />;
+                })}
             </div>
         </section>
     );
