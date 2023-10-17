@@ -4,21 +4,24 @@ import React, { useState } from "react";
 import Banner from "../components/banner";
 import StoresSection from "../components/StoresSection.component";
 
-import coffeeStoresJson from "../data/coffee-stores.json";
+import { fetchCoffeeStores, generateHrefs } from "../lib/coffee-stores";
+
 const sectionTitles = ["Stores Near You", "Toronto Stores"];
 
 export const getStaticProps = async (context) => {
+    const output = await fetchCoffeeStores();
     return {
         props: {
-            coffeeStores: coffeeStoresJson,
+            coffeeStores: output.results,
             sectionTitles,
         },
     };
 };
 
 export default function Home(props) {
+    const coffeeStores = props.coffeeStores;
     const [ctaText, setCtaText] = useState("View stores nearby");
-    const [stores, setStores] = useState(props.coffeeStores);
+    const [stores, setStores] = useState(coffeeStores);
 
     const handleClickCta = () => {
         ctaText === "Loading..."
@@ -26,18 +29,13 @@ export default function Home(props) {
             : setCtaText("Loading...");
     };
 
-    const generateHrefs = () => {
-        const storesArr = stores.map((store) =>
-            !store.href ? { ...store, href: `coffee-store/${store.id}` } : store
-        );
-        setStores(storesArr);
-    };
-
     stores.forEach((store) => {
         if (!store.href) {
-            generateHrefs();
+            generateHrefs(stores, setStores);
         }
     });
+
+    console.log("stores", stores);
 
     return (
         <>

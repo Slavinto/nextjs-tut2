@@ -8,7 +8,7 @@ const StoresSection = ({ coffeeStores, sectionTitle }) => {
             <h3 className='stores-section__title'>{sectionTitle}</h3>
             <div className='stores-section__cards'>
                 {coffeeStores.map((store) => {
-                    return <Card key={store.id} coffeeStore={store} />;
+                    return <Card key={store.fsq_id} coffeeStore={store} />;
                 })}
             </div>
         </section>

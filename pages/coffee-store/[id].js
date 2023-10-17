@@ -46,8 +46,11 @@ export const getStaticPaths = async () => {
 
 const CoffeeStores = ({ coffeeStore, comments }) => {
     const router = useRouter();
-    const { name, imgUrl, websiteUrl, address, neighbourhood } = coffeeStore;
-
+    const imgUrl =
+        "https://images.unsplash.com/photo-1453614512568-c4024d13c247?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80";
+    const { name, link, location, related_places } = coffeeStore;
+    const { address } = location;
+    const { neighbourhood } = related_places.parent;
     if (router.isFallback) {
         return <h1>Loading...</h1>;
     }
@@ -66,7 +69,7 @@ const CoffeeStores = ({ coffeeStore, comments }) => {
                     {" "}
                     ← Back to home
                 </Link>
-                <Link className='store__title' href={`${websiteUrl}`}>
+                <Link className='store__title' href={`${link}`}>
                     <h1>{name}</h1>
                 </Link>
                 <figure className='store__description'>

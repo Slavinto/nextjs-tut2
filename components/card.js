@@ -10,7 +10,10 @@ const Card = ({ coffeeStore }) => {
                 <div className='stores__image-container'>
                     <Image
                         className='stores__image'
-                        src={coffeeStore.imgUrl}
+                        src={
+                            coffeeStore.imgUrl ||
+                            "https://images.unsplash.com/photo-1453614512568-c4024d13c247?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80"
+                        }
                         alt='coffee store cafe people drinking coffee'
                         width={150}
                         height={100}
