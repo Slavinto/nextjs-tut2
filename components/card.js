@@ -6,14 +6,18 @@ const Card = ({ coffeeStore }) => {
     return (
         <Link className='stores__card-link' href={coffeeStore.href}>
             <figure className='stores__card'>
-                <h3 className='stores__card-title'>{coffeeStore.name}</h3>
+                {coffeeStore.name && (
+                    <h3 className='stores__card-title'>{coffeeStore.name}</h3>
+                )}
+                {coffeeStore.address && (
+                    <p className='stores__card-address'>
+                        {coffeeStore.address}
+                    </p>
+                )}
                 <div className='stores__image-container'>
                     <Image
                         className='stores__image'
-                        src={
-                            coffeeStore.imgUrl ||
-                            "https://images.unsplash.com/photo-1453614512568-c4024d13c247?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80"
-                        }
+                        src={coffeeStore.imgUrl}
                         alt='coffee store cafe people drinking coffee'
                         width={150}
                         height={100}
@@ -26,6 +30,7 @@ const Card = ({ coffeeStore }) => {
 };
 
 export default Card;
+
 // import Link from "next/link";
 // import Image from "next/image";
 // import cls from "classnames";

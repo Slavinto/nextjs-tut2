@@ -8,28 +8,26 @@ import geoIcon from "../../public/static/icons/places.svg";
 import starIcon from "../../public/static/icons/star.svg";
 import nearMe from "../../public/static/icons/nearMe.svg";
 
-import coffeeStoresJson from "../../data/coffee-stores.json";
+import { fetchCoffeeStores } from "../../lib/coffee-stores";
 
 export const getStaticProps = async (props) => {
     const { params } = props;
-    const res = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/${params.id}/comments`
-    );
-    const comments = await res.json();
+    const coffeeStores = await fetchCoffeeStores();
+
     const store = {
-        coffeeStore: coffeeStoresJson.find(
+        coffeeStore: coffeeStores.find(
             (store) => store.id.toString() === params.id
         ),
-        comments,
     };
-    console.log(store);
     return {
         props: { ...store },
     };
 };
 
 export const getStaticPaths = async () => {
-    const storePaths = coffeeStoresJson.map((store) => {
+    const coffeeStores = await fetchCoffeeStores();
+
+    const storePaths = coffeeStores.map((store) => {
         return {
             params: {
                 id: `${store.id}`,
@@ -37,24 +35,17 @@ export const getStaticPaths = async () => {
         };
     });
     return {
-        // paths: [...storePaths],
-        // paths: [{ params: { id: "0" } }, { params: { id: "1" } }],
         paths: storePaths,
         fallback: true,
     };
 };
 
-const CoffeeStores = ({ coffeeStore, comments }) => {
+const CoffeeStores = ({ coffeeStore }) => {
     const router = useRouter();
-    const imgUrl =
-        "https://images.unsplash.com/photo-1453614512568-c4024d13c247?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1632&q=80";
-    const { name, link, location, related_places } = coffeeStore;
-    const { address } = location;
-    const { neighbourhood } = related_places.parent;
     if (router.isFallback) {
         return <h1>Loading...</h1>;
     }
-
+    const { name, link, address, imgUrl, neighbourhood } = coffeeStore;
     const handleUpvote = () => {
         console.log("upvote btn pressed");
     };
@@ -62,16 +53,22 @@ const CoffeeStores = ({ coffeeStore, comments }) => {
     return (
         <>
             <Head>
-                <title>{name}</title>
+                {name ? (
+                    <title>{name}</title>
+                ) : (
+                    <title>Coffee Connoisseur</title>
+                )}
             </Head>
             <article className='store'>
                 <Link className='store__home-link' href={"/"}>
                     {" "}
                     ← Back to home
                 </Link>
-                <Link className='store__title' href={`${link}`}>
-                    <h1>{name}</h1>
-                </Link>
+                {name && (
+                    <Link className='store__title' href={`${link}`}>
+                        <h1>{name}</h1>
+                    </Link>
+                )}
                 <figure className='store__description'>
                     <div className='store__image-container'>
                         <Image
@@ -92,7 +89,9 @@ const CoffeeStores = ({ coffeeStore, comments }) => {
                                 height={20}
                                 alt='geolocation marker icon'
                             ></Image>
-                            <p className='store__address'>{address}</p>
+                            {address && (
+                                <p className='store__address'>{address}</p>
+                            )}
                         </div>
                         <div className='store__info-item-container'>
                             <Image
@@ -102,9 +101,11 @@ const CoffeeStores = ({ coffeeStore, comments }) => {
                                 height={20}
                                 alt='airplane icon'
                             ></Image>
-                            <p className='store__neighbourhood'>
-                                {neighbourhood}
-                            </p>
+                            {neighbourhood && (
+                                <p className='store__neighbourhood'>
+                                    {neighbourhood}
+                                </p>
+                            )}
                         </div>
                         <div className='store__info-item-container'>
                             <Image
@@ -125,17 +126,6 @@ const CoffeeStores = ({ coffeeStore, comments }) => {
                         </Link>
                     </div>
                 </figure>
-                <hr />
-                Comments:
-                <br style={{ alignSelf: "stretch", width: "100%" }} />
-                {comments.map((comment) => {
-                    return (
-                        <>
-                            <p key={comment.id}>{comment.body}</p>
-                            <br />
-                        </>
-                    );
-                })}
             </article>
         </>
     );

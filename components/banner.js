@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-// import "./banner.module.scss";
+import heroImagePath from "../public/static/heroimg.png";
 
 import React from "react";
 
@@ -26,7 +26,7 @@ const Banner = ({ ctaText, handleClickCta }) => {
             <figure className='banner__hero-image-container'>
                 <Image
                     className='banner__hero-image'
-                    src='/../public/static/heroimg.png'
+                    src={heroImagePath}
                     width={407}
                     height={240}
                     alt='women drinking coffee illustration'

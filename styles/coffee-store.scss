@@ -37,18 +37,16 @@
         }
     }
     &__image-container {
-        max-width: 50%;
         width: 70rem;
+        height: 35rem;
 
         @include p.mq(tablet-small, max) {
             max-width: 100%;
         }
     }
     &__image {
-        border-radius: 1rem;
         @include p.adaptive;
-        // object-fit: none;
-        object-fit: cover;
+        border-radius: 1rem;
         height: 35rem;
     }
     &__info {
