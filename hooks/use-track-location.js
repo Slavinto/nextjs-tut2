@@ -2,6 +2,7 @@ import { useState } from "react";
 
 const useTrackLocation = () => {
     const [locationErrorMessage, setLocationErrorMessage] = useState("");
+    const [isFindingLocation, setIsFindingLocation] = useState(false);
     const [location, setLocation] = useState("");
 
     const success = (position) => {
@@ -9,13 +10,17 @@ const useTrackLocation = () => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         setLocation(`${latitude},${longitude}`);
+        setIsFindingLocation(false);
     };
 
     const error = () => {
         setLocationErrorMessage("Unable to retrieve your location");
+        setIsFindingLocation(false);
     };
 
     const handleTrackLocation = () => {
+        setIsFindingLocation(true);
+
         if (!navigator.geolocation) {
             setLocationErrorMessage(
                 "Geolocation is not supported by your browser"
@@ -30,8 +35,10 @@ const useTrackLocation = () => {
         location,
         handleTrackLocation,
         locationErrorMessage,
+        isFindingLocation,
     };
 };
+
 export default useTrackLocation;
 
 // import { useContext, useState } from "react";

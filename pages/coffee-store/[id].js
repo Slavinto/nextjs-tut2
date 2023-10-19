@@ -8,16 +8,16 @@ import geoIcon from "../../public/static/icons/places.svg";
 import starIcon from "../../public/static/icons/star.svg";
 import nearMe from "../../public/static/icons/nearMe.svg";
 
-import { fetchCoffeeStores } from "../../lib/coffee-stores";
+import { fetchCoffeeStores, defaultImgUrl } from "../../lib/coffee-stores";
 
 export const getStaticProps = async (props) => {
     const { params } = props;
     const coffeeStores = await fetchCoffeeStores();
-
+    const coffeeStore = coffeeStores.find(
+        (store) => store.id.toString() === params.id
+    );
     const store = {
-        coffeeStore: coffeeStores.find(
-            (store) => store.id.toString() === params.id
-        ),
+        coffeeStore: coffeeStore ? coffeeStore : {},
     };
     return {
         props: { ...store },
@@ -75,7 +75,7 @@ const CoffeeStores = ({ coffeeStore }) => {
                             className='store__image'
                             width={500}
                             height={300}
-                            src={imgUrl}
+                            src={imgUrl || defaultImgUrl}
                             alt='a coffee shop image'
                         ></Image>
                     </div>
