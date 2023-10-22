@@ -5,31 +5,43 @@ import StoresSection from "../components/StoresSection.component";
 import useTrackLocation from "../hooks/use-track-location";
 
 import { fetchCoffeeStores } from "../lib/coffee-stores";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ACTION_TYPES, StoreContext } from "./_app";
 
 const sectionTitles = ["Stores Near You", "Moscow Stores"];
 
 export const getStaticProps = async (context) => {
     const coffeeStores = await fetchCoffeeStores();
-
     return {
         props: {
             coffeeStores,
-            sectionTitles,
         },
     };
 };
 
 export default function Home(props) {
-    const [coffeeStores, setCoffeeStores] = useState([]);
+    // const [coffeeStores, setCoffeeStores] = useState([]);
+    const stores = useContext(StoreContext);
+    let localCoffeeStores = [];
+
+    // console.log(storesData.storesState.coffeeStores.length);
+    // if (storesData.storesState.coffeeStores.length === 0) {
+    //     storesData.dispatch({
+    //         type: ACTION_TYPES.SET_COFFEE_STORES,
+    //         payload: {
+    //             coffeeStores,
+    //         },
+    //     });
+    // }
     const [fetchStoresError, setFetchStoresError] = useState("");
-    const stores = props.coffeeStores;
     const {
         location,
         locationErrorMessage,
         handleTrackLocation,
         isFindingLocation,
     } = useTrackLocation();
+    // const storesInfo = useContext(StoreContext);
+    // console.log({ storesInfo });
 
     useEffect(() => {
         if (location) {
@@ -51,6 +63,8 @@ export default function Home(props) {
 
     const handleClickCta = () => {
         handleTrackLocation();
+        if (location) {
+        }
     };
 
     return (
@@ -74,17 +88,17 @@ export default function Home(props) {
                     Something went wrong ({fetchStoresError})
                 </h3>
             )}
-            {coffeeStores.length > 0 && (
+            {localCoffeeStores.length > 0 && (
                 <StoresSection
                     key={sectionTitles[0]}
-                    coffeeStores={coffeeStores}
+                    coffeeStores={localCoffeeStores}
                     sectionTitle={sectionTitles[0]}
                 />
             )}
-            {stores.length > 0 && (
+            {props.coffeeStores.length > 0 && (
                 <StoresSection
                     key={sectionTitles[1]}
-                    coffeeStores={stores}
+                    coffeeStores={props.coffeeStores}
                     sectionTitle={sectionTitles[1]}
                 />
             )}
