@@ -20,39 +20,29 @@ export const getStaticProps = async (context) => {
 };
 
 export default function Home(props) {
-    // const [coffeeStores, setCoffeeStores] = useState([]);
-    const stores = useContext(StoreContext);
-    let localCoffeeStores = [];
-
-    // console.log(storesData.storesState.coffeeStores.length);
-    // if (storesData.storesState.coffeeStores.length === 0) {
-    //     storesData.dispatch({
-    //         type: ACTION_TYPES.SET_COFFEE_STORES,
-    //         payload: {
-    //             coffeeStores,
-    //         },
-    //     });
-    // }
+    const { storesState, dispatch } = useContext(StoreContext);
+    const { location } = storesState;
+    const { coffeeStores: localCoffeeStores } = storesState;
     const [fetchStoresError, setFetchStoresError] = useState("");
-    const {
-        location,
-        locationErrorMessage,
-        handleTrackLocation,
-        isFindingLocation,
-    } = useTrackLocation();
-    // const storesInfo = useContext(StoreContext);
-    // console.log({ storesInfo });
+    const { locationErrorMessage, handleTrackLocation, isFindingLocation } =
+        useTrackLocation();
 
     useEffect(() => {
         if (location) {
+            const arr = location.split(",");
+            const coords = {
+                lat: arr[0],
+                lng: arr[1],
+            };
             try {
-                const arr = location.split(",");
-                const coords = {
-                    lat: arr[0],
-                    lng: arr[1],
-                };
                 (async () => {
-                    setCoffeeStores(await fetchCoffeeStores(coords, true));
+                    const coffeeStores = await fetchCoffeeStores(coords, true);
+                    dispatch({
+                        type: ACTION_TYPES.SET_COFFEE_STORES,
+                        payload: {
+                            coffeeStores,
+                        },
+                    });
                 })();
             } catch (error) {
                 setFetchStoresError(error.message);
@@ -63,8 +53,6 @@ export default function Home(props) {
 
     const handleClickCta = () => {
         handleTrackLocation();
-        if (location) {
-        }
     };
 
     return (
@@ -88,7 +76,7 @@ export default function Home(props) {
                     Something went wrong ({fetchStoresError})
                 </h3>
             )}
-            {localCoffeeStores.length > 0 && (
+            {localCoffeeStores?.length > 0 && (
                 <StoresSection
                     key={sectionTitles[0]}
                     coffeeStores={localCoffeeStores}
