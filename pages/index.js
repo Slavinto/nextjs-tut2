@@ -6,7 +6,7 @@ import useTrackLocation from "../hooks/use-track-location";
 
 import { fetchCoffeeStores } from "../lib/coffee-stores";
 import { useContext, useEffect, useState } from "react";
-import { ACTION_TYPES, StoreContext } from "./_app";
+import { ACTION_TYPES, StoreContext } from "../store/store-context";
 
 const sectionTitles = ["Stores Near You", "Moscow Stores"];
 
@@ -36,7 +36,11 @@ export default function Home(props) {
             };
             try {
                 (async () => {
-                    const coffeeStores = await fetchCoffeeStores(coords, true);
+                    const response = await fetch(
+                        `/api/getCoffeeStoresByLocation?location=${location}&fromClient=false&limit=30`
+                    );
+                    const coffeeStores = await response.json();
+
                     dispatch({
                         type: ACTION_TYPES.SET_COFFEE_STORES,
                         payload: {
@@ -44,6 +48,7 @@ export default function Home(props) {
                         },
                     });
                 })();
+                fetchStoresError && setFetchStoresError("");
             } catch (error) {
                 setFetchStoresError(error.message);
                 console.log(error.message);

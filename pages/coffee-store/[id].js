@@ -9,7 +9,7 @@ import starIcon from "../../public/static/icons/star.svg";
 import nearMe from "../../public/static/icons/nearMe.svg";
 
 import { fetchCoffeeStores, defaultImgUrl } from "../../lib/coffee-stores";
-import { StoreContext } from "../_app";
+import { StoreContext } from "../../store/store-context";
 
 export const getStaticPaths = async () => {
     const coffeeStores = await fetchCoffeeStores();
