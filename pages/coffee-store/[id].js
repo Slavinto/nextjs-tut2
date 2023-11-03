@@ -38,7 +38,7 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (props) => {
     const { params } = props;
     let coffeeStores = null;
-
+    // console.log({ params });
     try {
         coffeeStores = await fetchCoffeeStores();
     } catch (error) {
@@ -52,11 +52,8 @@ export const getStaticProps = async (props) => {
     const coffeeStore = coffeeStores.find(
         (store) => store.id.toString() === params.id
     );
-    const store = {
-        coffeeStore: coffeeStore ? coffeeStore : {},
-    };
     return {
-        props: { ...store },
+        props: { ...coffeeStore },
     };
 };
 
@@ -97,12 +94,12 @@ const CoffeeStores = (initialProps) => {
     console.log({ ...data?.store });
 
     useEffect(() => {
-        if (!isEmpty({ ...data.store })) {
-            console.log("data from SWR", data[0]);
-            setCoffeeStore(data.store);
+        if (!isEmpty({ ...data?.store })) {
+            console.log("data from SWR", data?.store);
+            setCoffeeStore(data?.store);
             setVotes(data.store.votes);
         }
-    }, [data.store]);
+    }, [data?.store]);
 
     if (error) return <>Something went wrong ({error.message})</>;
 
@@ -150,7 +147,7 @@ const CoffeeStores = (initialProps) => {
                 method: "GET",
                 apiUrl: `/api/getCoffeeStoreById?id=${coffeeStore.id}`,
             };
-        } else {
+        } else if (!id) {
             query = {
                 ...query,
                 method: "POST",
@@ -182,6 +179,8 @@ const CoffeeStores = (initialProps) => {
             console.log("error updating upvote counter", error.message);
         }
     };
+
+    if (isEmpty(coffeeStore)) return <h1>Loading...</h1>;
 
     const { name, link, address, imgUrl, neighbourhood } = coffeeStore;
 
