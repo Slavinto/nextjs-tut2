@@ -1,24 +1,13 @@
-import db from "./initFirebaseAdmin";
-
-const stores = db.collection("local-coffee-stores");
-
-const findStoreById = async (id) => {
-    try {
-        const storeRef = stores.doc(id);
-        const store = await storeRef.get();
-        return store.exists ? { ...store.data() } : null;
-    } catch (error) {
-        console.log("Error finding store in db");
-    }
-};
+import { findStoreById, createStore } from "../../lib/firebase";
 
 const createCoffeeStore = async (req, res) => {
     // checking if current request is of type post if no exiting instantly
     if (req.method !== "POST")
-        res.json({ message: "error - invalid request method" });
+        res.status(400).json({ message: "error - invalid request method" });
 
-    console.log({ ...req.query });
-    console.log({ ...req.body });
+    // console.log({ ...req.query });
+    // console.log({ ...req.body });
+
     // destructuring request body object properties into variables
     const { id, href, name, address, neighbourhood, link, imgUrl, votes } =
         req.body;
@@ -29,34 +18,36 @@ const createCoffeeStore = async (req, res) => {
         });
 
     try {
+        let store;
         // trying to find a store in database by id
-        const store = await findStoreById(id);
+        store = await findStoreById(id);
 
         // if store exists return a store object and exit
-        if (store) res.json({ store });
+        if (store) res.status(200).json({ store });
 
         // if a store doesn`t exist create a store
         const newStore = {
-            id,
-            href,
-            name,
-            address,
-            neighbourhood,
-            link,
-            imgUrl,
-            votes,
+            id: `${id}`,
+            href: `${href}`,
+            name: `${name}`,
+            address: `${address}` || "",
+            neighbourhood: `${neighbourhood}` || "",
+            link: `${link}` || "",
+            imgUrl: `${imgUrl}`,
+            votes: votes || 0,
         };
 
         // creating a store in a database
-        const docRef = stores.doc(newStore.id);
-        await docRef.set(newStore);
-        // checking that the store has been created
-        // and also to output the object value to response=>createdStore
-        const createdStore = await findStoreById(newStore.id);
+        store = await createStore(newStore);
 
-        res.json({
+        if (!store)
+            res.status(500).json({
+                message: "error happened when creating a store",
+            });
+
+        res.status(201).json({
             message: `Store was created successfully: `,
-            createdStore: { ...createdStore },
+            store: { ...store },
         });
     } catch (error) {
         console.log(error.message);

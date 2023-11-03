@@ -7,28 +7,48 @@ import Image from "next/image";
 import geoIcon from "../../public/static/icons/places.svg";
 import starIcon from "../../public/static/icons/star.svg";
 import nearMe from "../../public/static/icons/nearMe.svg";
+import useSWR from "swr";
 
 import { fetchCoffeeStores, defaultImgUrl } from "../../lib/coffee-stores";
 import { StoreContext } from "../../store/store-context";
 
 export const getStaticPaths = async () => {
-    const coffeeStores = await fetchCoffeeStores();
-    const storePaths = coffeeStores.map((store) => {
-        return {
-            params: {
-                id: `${store.id}`,
-            },
-        };
-    });
-    return {
-        paths: storePaths,
-        fallback: true,
-    };
+    try {
+        const coffeeStores = await fetchCoffeeStores();
+        if (!coffeeStores) throw new Error("error fetching coffee stores");
+        const storePaths = coffeeStores.map((store) => {
+            return {
+                params: {
+                    id: `${store.id}`,
+                },
+            };
+        });
+        return isEmpty(storePaths)
+            ? { paths: [], fallback: true }
+            : {
+                  paths: storePaths,
+                  fallback: true,
+              };
+    } catch (error) {
+        console.log("something went wrong - ", error.message);
+        return { paths: [], fallback: true };
+    }
 };
 
 export const getStaticProps = async (props) => {
     const { params } = props;
-    const coffeeStores = await fetchCoffeeStores();
+    let coffeeStores = null;
+
+    try {
+        coffeeStores = await fetchCoffeeStores();
+    } catch (error) {
+        console.log("error while fetching static props ", error.message);
+    }
+
+    // if (!coffeeStores || coffeeStores.length === 0)
+    //     return {
+    //         props: {},
+    //     };
     const coffeeStore = coffeeStores.find(
         (store) => store.id.toString() === params.id
     );
@@ -41,7 +61,24 @@ export const getStaticProps = async (props) => {
 };
 
 const isEmpty = (object) => {
+    if (!object) return true;
     return Object.keys(object).length === 0;
+};
+
+const fetchApiUrl = async (query) => {
+    const { method, apiUrl, obj } = query;
+    const headers = { "Content-Type": "application/json" };
+
+    const response =
+        method === "GET"
+            ? await fetch(apiUrl)
+            : await fetch(apiUrl, {
+                  method,
+                  headers,
+                  body: JSON.stringify(obj),
+              });
+    const data = await response.json();
+    return data;
 };
 
 const CoffeeStores = (initialProps) => {
@@ -49,25 +86,104 @@ const CoffeeStores = (initialProps) => {
     if (router.isFallback) {
         return <h1>Loading...</h1>;
     }
-
-    const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
-    const stores = useContext(StoreContext);
-    const { coffeeStores } = stores.storesState;
     const id = router.query.id;
 
+    const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+    const [votes, setVotes] = useState(0);
+    const stores = useContext(StoreContext);
+    const { coffeeStores } = stores?.storesState;
+    const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+    console.log({ ...data?.store });
+
     useEffect(() => {
+        if (!isEmpty({ ...data.store })) {
+            console.log("data from SWR", data[0]);
+            setCoffeeStore(data.store);
+            setVotes(data.store.votes);
+        }
+    }, [data.store]);
+
+    if (error) return <>Something went wrong ({error.message})</>;
+
+    useEffect(() => {
+        console.log({ ...initialProps.coffeeStore });
+        console.log({ coffeeStores });
+
         if (isEmpty(initialProps.coffeeStore) && coffeeStores.length > 0) {
-            const coffeeStore = coffeeStores.find(
+            // in case of context stores
+            const coffeeStoreFromContext = coffeeStores.find(
                 (store) => store.id.toString() === id
             );
-            setCoffeeStore(coffeeStore);
+            if (coffeeStoreFromContext) {
+                handleCreateCoffeeStore(coffeeStoreFromContext);
+            }
+        } else if (!isEmpty(initialProps.coffeeStore)) {
+            // SSG
+            setCoffeeStore(initialProps.coffeeStore);
+        } else {
+            // in case of hard reset
+            handleCreateCoffeeStore({ id });
         }
-    }, [id]);
+    }, [id, initialProps, initialProps.coffeeStore]);
+
+    async function fetcher(...args) {
+        try {
+            const res = await fetch(args);
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            console.log("error fetching data ", error.message);
+        }
+    }
+
+    async function handleCreateCoffeeStore(coffeeStore) {
+        console.log(coffeeStore);
+        let query = {
+            method: "",
+            apiUrl: "",
+            obj: {},
+        };
+        if (!coffeeStore.name && id) {
+            query = {
+                ...query,
+                method: "GET",
+                apiUrl: `/api/getCoffeeStoreById?id=${coffeeStore.id}`,
+            };
+        } else {
+            query = {
+                ...query,
+                method: "POST",
+                obj: { ...coffeeStore },
+                apiUrl: "/api/createCoffeeStore",
+            };
+        }
+        try {
+            const { store } = await fetchApiUrl(query);
+            console.log({ store });
+            setCoffeeStore(store);
+            // setVotes(store.votes);
+        } catch (error) {
+            console.log("error creating coffee store - ", error.message);
+        }
+    }
+
+    const handleUpvote = async () => {
+        const query = {
+            method: "PUT",
+            obj: { id },
+            apiUrl: "/api/favouriteCoffeeStoreById",
+        };
+        try {
+            const { store } = await fetchApiUrl(query);
+            setCoffeeStore(store);
+            setVotes(store.votes);
+        } catch (error) {
+            console.log("error updating upvote counter", error.message);
+        }
+    };
 
     const { name, link, address, imgUrl, neighbourhood } = coffeeStore;
-    const handleUpvote = () => {
-        console.log("upvote btn pressed");
-    };
 
     return (
         <>
@@ -134,7 +250,7 @@ const CoffeeStores = (initialProps) => {
                                 height={20}
                                 alt='star icon'
                             ></Image>
-                            <p className='store__rating'>{5}</p>
+                            <p className='store__rating'>{votes}</p>
                         </div>
                         <Link
                             className='store__upvote-link banner__cta'
