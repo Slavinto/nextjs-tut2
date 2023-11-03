@@ -38,17 +38,12 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (props) => {
     const { params } = props;
     let coffeeStores = null;
-    // console.log({ params });
     try {
         coffeeStores = await fetchCoffeeStores();
     } catch (error) {
         console.log("error while fetching static props ", error.message);
     }
 
-    // if (!coffeeStores || coffeeStores.length === 0)
-    //     return {
-    //         props: {},
-    //     };
     const coffeeStore = coffeeStores.find(
         (store) => store.id.toString() === params.id
     );
@@ -84,18 +79,14 @@ const CoffeeStores = (initialProps) => {
         return <h1>Loading...</h1>;
     }
     const id = router.query.id;
-
-    const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+    const [coffeeStore, setCoffeeStore] = useState(initialProps);
     const [votes, setVotes] = useState(0);
     const stores = useContext(StoreContext);
     const { coffeeStores } = stores?.storesState;
     const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
 
-    console.log({ ...data?.store });
-
     useEffect(() => {
         if (!isEmpty({ ...data?.store })) {
-            console.log("data from SWR", data?.store);
             setCoffeeStore(data?.store);
             setVotes(data.store.votes);
         }
@@ -104,10 +95,10 @@ const CoffeeStores = (initialProps) => {
     if (error) return <>Something went wrong ({error.message})</>;
 
     useEffect(() => {
-        console.log({ ...initialProps.coffeeStore });
-        console.log({ coffeeStores });
+        console.log({ ...initialProps });
+        // console.log({ coffeeStores });
 
-        if (isEmpty(initialProps.coffeeStore) && coffeeStores.length > 0) {
+        if (isEmpty(initialProps) && coffeeStores.length > 0) {
             // in case of context stores
             const coffeeStoreFromContext = coffeeStores.find(
                 (store) => store.id.toString() === id
@@ -115,14 +106,16 @@ const CoffeeStores = (initialProps) => {
             if (coffeeStoreFromContext) {
                 handleCreateCoffeeStore(coffeeStoreFromContext);
             }
-        } else if (!isEmpty(initialProps.coffeeStore)) {
+        } else if (!isEmpty(initialProps)) {
             // SSG
-            setCoffeeStore(initialProps.coffeeStore);
+            console.log("proceeding ssg with db post request");
+            handleCreateCoffeeStore(initialProps);
+            // setCoffeeStore(initialProps);
         } else {
             // in case of hard reset
             handleCreateCoffeeStore({ id });
         }
-    }, [id, initialProps, initialProps.coffeeStore]);
+    }, [id, initialProps, initialProps]);
 
     async function fetcher(...args) {
         try {
@@ -135,7 +128,6 @@ const CoffeeStores = (initialProps) => {
     }
 
     async function handleCreateCoffeeStore(coffeeStore) {
-        console.log(coffeeStore);
         let query = {
             method: "",
             apiUrl: "",
@@ -157,9 +149,7 @@ const CoffeeStores = (initialProps) => {
         }
         try {
             const { store } = await fetchApiUrl(query);
-            console.log({ store });
             setCoffeeStore(store);
-            // setVotes(store.votes);
         } catch (error) {
             console.log("error creating coffee store - ", error.message);
         }
