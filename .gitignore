@@ -3,7 +3,6 @@
 # dependencies
 /node_modules
 /.pnp
-/discover-local-coffee-stores-c91ba310d512.json
 .pnp.js
 
 # testing

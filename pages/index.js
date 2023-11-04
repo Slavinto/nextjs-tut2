@@ -54,7 +54,7 @@ export default function Home(props) {
                 console.log(error.message);
             }
         }
-    }, [location]);
+    }, [location, dispatch, fetchStoresError]);
 
     const handleClickCta = () => {
         handleTrackLocation();
