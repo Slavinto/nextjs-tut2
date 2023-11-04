@@ -1,4 +1,4 @@
-import { findStoreById, createStore } from "../../lib/firebase";
+import { findStoreById, createStore, getVotes } from "../../lib/firebase";
 
 const createCoffeeStore = async (req, res) => {
     // checking if current request is of type post if no exiting instantly
@@ -9,8 +9,7 @@ const createCoffeeStore = async (req, res) => {
     // console.log({ ...req.body });
 
     // destructuring request body object properties into variables
-    const { id, href, name, address, neighbourhood, link, imgUrl, votes } =
-        req.body;
+    const { id, href, name, address, neighbourhood, link, imgUrl } = req.body;
 
     // if request doesn`t provide id or name values exit instantly
     if (!id || !name)
@@ -24,10 +23,10 @@ const createCoffeeStore = async (req, res) => {
         store = await findStoreById(id);
 
         // if store exists return a store object and exit
-        if (store.id || store.name)
+        if (store?.id || store?.name)
             res.status(200).json({ store: { ...store } });
 
-        console.log("store", { ...store });
+        const votes = await getVotes(id);
 
         // if a store doesn`t exist create a store
         const newStore = {
@@ -38,7 +37,7 @@ const createCoffeeStore = async (req, res) => {
             neighbourhood: `${neighbourhood}` || "",
             link: `${link}` || "",
             imgUrl: `${imgUrl}`,
-            votes: votes,
+            votes,
         };
 
         // creating a store in a database

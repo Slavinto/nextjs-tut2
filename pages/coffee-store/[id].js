@@ -30,7 +30,7 @@ export const getStaticPaths = async () => {
                   fallback: true,
               };
     } catch (error) {
-        console.log("something went wrong - ", error.message);
+        console.error("something went wrong - ", error.message);
         return { paths: [], fallback: true };
     }
 };
@@ -41,7 +41,7 @@ export const getStaticProps = async (props) => {
     try {
         coffeeStores = await fetchCoffeeStores();
     } catch (error) {
-        console.log("error while fetching static props ", error.message);
+        console.error("error while fetching static props ", error.message);
     }
 
     const coffeeStore = coffeeStores.find(
@@ -73,11 +73,40 @@ const fetchApiUrl = async (query) => {
     return data;
 };
 
+async function handleApiRequest(id, coffeeStore, setCoffeeStore) {
+    let query = {
+        method: "",
+        apiUrl: "",
+        obj: {},
+    };
+    if (!coffeeStore.name && id) {
+        query = {
+            ...query,
+            method: "GET",
+            apiUrl: `/api/getCoffeeStoreById?id=${coffeeStore.id}`,
+        };
+    } else {
+        query = {
+            ...query,
+            method: "POST",
+            obj: { ...coffeeStore },
+            apiUrl: "/api/createCoffeeStore",
+        };
+    }
+    try {
+        const { store } = await fetchApiUrl(query);
+        setCoffeeStore(store);
+    } catch (error) {
+        console.error("error creating coffee store - ", error.message);
+    }
+}
+
 const CoffeeStores = (initialProps) => {
     const router = useRouter();
-    if (router.isFallback) {
-        return <h1>Loading...</h1>;
-    }
+    let outputJsx = "";
+
+    if (router.isFallback) outputJsx = <h1>Loading...</h1>;
+
     const id = router.query.id;
     const [coffeeStore, setCoffeeStore] = useState(initialProps);
     const [votes, setVotes] = useState(0);
@@ -92,30 +121,21 @@ const CoffeeStores = (initialProps) => {
         }
     }, [data?.store]);
 
-    if (error) return <>Something went wrong ({error.message})</>;
+    if (error) outputJsx = <>Something went wrong ({error.message})</>;
 
     useEffect(() => {
-        console.log({ ...initialProps });
-        // console.log({ coffeeStores });
-
+        let coffeeStoreFromContext = {};
         if (isEmpty(initialProps) && coffeeStores.length > 0) {
             // in case of context stores
-            const coffeeStoreFromContext = coffeeStores.find(
+            coffeeStoreFromContext = coffeeStores.find(
                 (store) => store.id.toString() === id
             );
-            if (coffeeStoreFromContext) {
-                handleCreateCoffeeStore(coffeeStoreFromContext);
-            }
-        } else if (!isEmpty(initialProps)) {
-            // SSG
-            console.log("proceeding ssg with db post request");
-            handleCreateCoffeeStore(initialProps);
-            // setCoffeeStore(initialProps);
-        } else {
-            // in case of hard reset
-            handleCreateCoffeeStore({ id });
         }
-    }, [id, initialProps, initialProps]);
+        const store = isEmpty(initialProps)
+            ? coffeeStoreFromContext
+            : initialProps;
+        handleApiRequest(id, store, setCoffeeStore);
+    }, [id, initialProps, coffeeStores]);
 
     async function fetcher(...args) {
         try {
@@ -123,35 +143,7 @@ const CoffeeStores = (initialProps) => {
             const data = await res.json();
             return data;
         } catch (error) {
-            console.log("error fetching data ", error.message);
-        }
-    }
-
-    async function handleCreateCoffeeStore(coffeeStore) {
-        let query = {
-            method: "",
-            apiUrl: "",
-            obj: {},
-        };
-        if (!coffeeStore.name && id) {
-            query = {
-                ...query,
-                method: "GET",
-                apiUrl: `/api/getCoffeeStoreById?id=${coffeeStore.id}`,
-            };
-        } else if (!id) {
-            query = {
-                ...query,
-                method: "POST",
-                obj: { ...coffeeStore },
-                apiUrl: "/api/createCoffeeStore",
-            };
-        }
-        try {
-            const { store } = await fetchApiUrl(query);
-            setCoffeeStore(store);
-        } catch (error) {
-            console.log("error creating coffee store - ", error.message);
+            console.error("error fetching data ", error.message);
         }
     }
 
@@ -166,7 +158,7 @@ const CoffeeStores = (initialProps) => {
             setCoffeeStore(store);
             setVotes(store.votes);
         } catch (error) {
-            console.log("error updating upvote counter", error.message);
+            console.error("error updating upvote counter", error.message);
         }
     };
 
@@ -174,7 +166,7 @@ const CoffeeStores = (initialProps) => {
 
     const { name, link, address, imgUrl, neighbourhood } = coffeeStore;
 
-    return (
+    outputJsx = (
         <>
             <Head>
                 {name ? (
@@ -253,6 +245,8 @@ const CoffeeStores = (initialProps) => {
             </article>
         </>
     );
+
+    return outputJsx;
 };
 
 export default CoffeeStores;
