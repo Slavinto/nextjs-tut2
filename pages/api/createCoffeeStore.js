@@ -2,8 +2,10 @@ import { findStoreById, createStore, getVotes } from "../../lib/firebase";
 
 const createCoffeeStore = async (req, res) => {
     // checking if current request is of type post if no exiting instantly
-    if (req.method !== "POST")
+    if (req.method !== "POST") {
         res.status(400).json({ message: "error - invalid request method" });
+        return;
+    }
 
     // console.log({ ...req.query });
     // console.log({ ...req.body });
@@ -12,10 +14,12 @@ const createCoffeeStore = async (req, res) => {
     const { id, href, name, address, neighbourhood, link, imgUrl } = req.body;
 
     // if request doesn`t provide id or name values exit instantly
-    if (!id || !name)
+    if (!id || !name) {
         res.status(400).json({
             message: "invalid request: check id or name values",
         });
+        return;
+    }
 
     try {
         let store;
@@ -23,8 +27,10 @@ const createCoffeeStore = async (req, res) => {
         store = await findStoreById(id);
 
         // if store exists return a store object and exit
-        if (store?.id || store?.name)
+        if (store?.id || store?.name) {
             res.status(200).json({ store: { ...store } });
+            return;
+        }
 
         const votes = await getVotes(id);
 
@@ -43,15 +49,18 @@ const createCoffeeStore = async (req, res) => {
         // creating a store in a database
         store = await createStore(newStore);
 
-        if (!store)
+        if (!store) {
             res.status(500).json({
                 message: "error happened when creating a store",
             });
+            return;
+        }
 
         res.status(201).json({
             message: `Store was created successfully: `,
             store: { ...store },
         });
+        return;
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ message: error.message });

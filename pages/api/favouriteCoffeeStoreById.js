@@ -1,13 +1,16 @@
 import { updateStoreVotes } from "../../lib/firebase";
 
 async function favouriteCoffeeStoreById(req, res) {
-    if (req.method !== "PUT")
+    if (req.method !== "PUT") {
         res.status(403).json({ message: "invalid request method" });
+        return;
+    }
     try {
         const store = await updateStoreVotes(req.body.id);
         res.status(200).json({
             store,
         });
+        return;
     } catch (error) {
         console.log(error.message);
         res.status(500).json({
