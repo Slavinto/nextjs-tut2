@@ -75,7 +75,7 @@ const fetchApiUrl = async (query) => {
 
 async function handleApiRequest(id, coffeeStore, setCoffeeStore) {
     let query = {
-        method: "",
+        method: "GET",
         apiUrl: "",
         obj: {},
     };
@@ -83,18 +83,19 @@ async function handleApiRequest(id, coffeeStore, setCoffeeStore) {
         query = {
             ...query,
             method: "GET",
-            apiUrl: `/api/getCoffeeStoreById?id=${coffeeStore.id}`,
+            apiUrl: `/api/getCoffeeStoreById?id=${id}`,
         };
     } else {
-        query = {
-            ...query,
-            method: "POST",
-            obj: { ...coffeeStore },
-            apiUrl: "/api/createCoffeeStore",
-        };
+        if (!isEmpty(coffeeStore))
+            query = {
+                ...query,
+                method: "POST",
+                obj: { ...coffeeStore },
+                apiUrl: "/api/createCoffeeStore",
+            };
     }
     try {
-        const { store } = await fetchApiUrl(query);
+        const store = await fetchApiUrl(query);
         setCoffeeStore(store);
     } catch (error) {
         console.error("error creating coffee store - ", error.message);
@@ -105,14 +106,17 @@ const CoffeeStores = (initialProps) => {
     const router = useRouter();
     let outputJsx = "";
 
-    if (router.isFallback) outputJsx = <h1>Loading...</h1>;
-
     const id = router.query.id;
+
+    if (router.isFallback || !id) outputJsx = <h1>Loading...</h1>;
+
     const [coffeeStore, setCoffeeStore] = useState(initialProps);
     const [votes, setVotes] = useState(0);
     const stores = useContext(StoreContext);
     const { coffeeStores } = stores?.storesState;
     const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+    if (coffeeStore?.votes && coffeeStore?.votes !== votes)
+        setVotes(coffeeStore.votes);
 
     useEffect(() => {
         if (!isEmpty({ ...data?.store })) {
@@ -124,16 +128,15 @@ const CoffeeStores = (initialProps) => {
     if (error) outputJsx = <>Something went wrong ({error.message})</>;
 
     useEffect(() => {
+        if (!id) return;
         let coffeeStoreFromContext = {};
-        if (isEmpty(initialProps) && coffeeStores.length > 0) {
-            // in case of context stores
+        let store = {};
+        if (coffeeStores.length > 0) {
             coffeeStoreFromContext = coffeeStores.find(
                 (store) => store.id.toString() === id
             );
-        }
-        const store = isEmpty(initialProps)
-            ? coffeeStoreFromContext
-            : initialProps;
+            store = { ...coffeeStoreFromContext };
+        } else if (!isEmpty(initialProps)) store = { ...initialProps };
         handleApiRequest(id, store, setCoffeeStore);
     }, [id, initialProps, coffeeStores]);
 

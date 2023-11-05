@@ -25,11 +25,9 @@ const createCoffeeStore = async (req, res) => {
         let store;
         // trying to find a store in database by id
         store = await findStoreById(id);
-
         // if store exists return a store object and exit
         if (store?.id || store?.name) {
-            res.status(200).json({ store: { ...store } });
-            return;
+            return res.status(200).json(store);
         }
 
         const votes = await getVotes(id);
@@ -43,24 +41,17 @@ const createCoffeeStore = async (req, res) => {
             neighbourhood: `${neighbourhood}` || "",
             link: `${link}` || "",
             imgUrl: `${imgUrl}`,
-            votes,
+            votes: votes ? votes : 0,
         };
-
         // creating a store in a database
         store = await createStore(newStore);
 
         if (!store) {
-            res.status(500).json({
+            return res.status(500).json({
                 message: "error happened when creating a store",
             });
-            return;
         }
-
-        res.status(201).json({
-            message: `Store was created successfully: `,
-            store: { ...store },
-        });
-        return;
+        return res.status(201).json(store);
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ message: error.message });

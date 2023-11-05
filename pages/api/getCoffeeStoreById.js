@@ -3,8 +3,9 @@ import { findStoreById } from "../../lib/firebase";
 const getCoffeeStoreById = async (req, res) => {
     // checking if current request is of type get if no exiting instantly
     if (req.method !== "GET") {
-        res.status(400).json({ message: "error - invalid request method" });
-        return;
+        return res
+            .status(400)
+            .json({ message: "error - invalid request method" });
     }
 
     // console.log({ ...req.query });
@@ -14,22 +15,19 @@ const getCoffeeStoreById = async (req, res) => {
     const { id } = req.query;
     // if request doesn`t provide id or name values exit instantly
     if (!id) {
-        res.status(400).json({
+        return res.status(400).json({
             message: "invalid request: check id or name values",
         });
-        return;
     }
 
     try {
         // trying to find a store in database by id
         const store = await findStoreById(id);
-
         // if store exists return a store object and exit
-        if (store) res.status(200).json({ store });
-        return;
+        if (store) return res.status(200).json(store);
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
