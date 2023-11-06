@@ -11,6 +11,11 @@ export default class MyDocument extends Document {
                         as='font'
                         crossOrigin='anonimous'
                     ></link>
+                    <meta
+                        name='description'
+                        content='A small web application for finding local coffe stores. Just click view stores nearby'
+                    />
+                    <meta name='robots' content='all'></meta>
                 </Head>
                 <body>
                     <Main></Main>
